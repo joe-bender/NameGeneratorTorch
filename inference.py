@@ -1,32 +1,38 @@
 import torch
 import torch.nn as nn
 from torch.nn.functional import softmax
-from get_data import letter_to_tensor, letter_to_category
+import numpy as np
+from helpers import letter_to_tensor, letter_to_category, category_to_letter, tensor_to_letter
 
-def category_to_letter(cat):
-    return chr(cat + 97)
-
-class RNN(nn.Module):
-    def __init__(self, D_in, D_out, layers):
-        super(RNN, self).__init__()
-        self.lstm = nn.LSTM(D_in, D_out, layers)
-
-    def forward(self, x, hidden_in):
-        output, hidden_out = self.lstm(x, hidden_in)
-        return output, hidden_out
-
-model = RNN(26, 26, 2)
+model = nn.LSTM(26, 26, 2)
+model.load_state_dict(torch.load('models/model.pt'))
 model.eval()
 
-with torch.no_grad():
-    letter = 'a'
-    x = letter_to_tensor(letter)
-    x = x.view(1, 1, -1)
-    print(x)
+def pred_to_letter(pred):
+    pred = pred.view(-1)
+    sm = softmax(pred, dim=0)
+    probs = sm.numpy()
+    print(probs)
+    letters = np.arange(26)
+    choice = np.random.choice(letters, p=probs)
+    letter = category_to_letter(choice)
+    return letter
 
-    y_pred = model(x)
-    softmax = softmax(y_pred, dim=2)
-    print(softmax)
-    choice = softmax.argmax().item()
-    print(choice)
-    print(category_to_letter(choice))
+def generate_name(first_letter):
+    letters = [first_letter]
+    with torch.no_grad():
+        x = letter_to_tensor(first_letter)
+        x = x.view(1, 1, -1)
+        hidden = (torch.zeros(2, 1, 26), torch.zeros(2, 1, 26))
+
+        for _ in range(5):
+            y_pred, hidden = model(x, hidden)
+            letter = pred_to_letter(y_pred)
+            letters.append(letter)
+            x = letter_to_tensor(letter).view(1, 1, -1)
+
+    return ''.join(letters).capitalize()
+
+letter = category_to_letter(torch.LongTensor(1).random_(26).item())
+name = generate_name(letter)
+print(name)
