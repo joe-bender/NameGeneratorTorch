@@ -1,4 +1,4 @@
 *.csv
 6-letter-words.txt
 __pycache__/
-model/
+models/
