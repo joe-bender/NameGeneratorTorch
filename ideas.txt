@@ -1,0 +1,22 @@
+-things to generate:
+first names
+last names
+city names
+species/animal/plant names
+
+-data sources:
+list of names from many languages and countries
+
+-app ideas:
+Fantasy Name Generator
+	helps with coming up with names for all named entities in a fantasy/sci-fi story
+use sliders to mix various amounts from various data sources
+	mix between language sources (French/Spanish/Chinese)
+start typing a name and narrow down suggestions
+make sure the generated name doesn't match anything in the data set
+	check that it's not a word in other languages by checking dictionaries
+temperature slider
+
+-potentional problems:
+bias for starting names with certain letters
+	make sure input data has even distribution of many starting letters
