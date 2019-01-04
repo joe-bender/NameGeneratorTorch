@@ -2,26 +2,24 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from data_funcs import get_dataloader
+from NamesRNN import NamesRNN
 
 # hyper-parameters
-D_in = 26
-D_out = 26
-layers = 2
-lr = .01
-seq_length = 5
+learning_rate = .001
 batch_size = 64
-C = D_out # number of categories for classifiction
-epochs = 200
+epochs = 1000
+
+# other settings
 print_every = 1
 
-model = nn.LSTM(D_in, D_out, layers)
+model = NamesRNN()
 dataloader = get_dataloader('names2017.csv', batch_size)
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=lr)
+optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
 for t in range(epochs):
-    loss = 0
+    loss = None
     for x, y in dataloader:
         y_pred, _ = model(x)
 
@@ -37,7 +35,8 @@ for t in range(epochs):
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
-    # print loss occasionally
+
+    # print loss at intervals
     if (t+1) % print_every == 0 or t == 0:
         print(t+1, loss.item())
 

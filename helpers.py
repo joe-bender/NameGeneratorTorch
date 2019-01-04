@@ -15,8 +15,3 @@ def category_to_letter(category):
 
 def tensor_to_letter(tensor):
     return category_to_letter(tensor.argmax().item())
-
-# category = letter_to_category('g')
-# print(category_to_letter(category))
-# tensor = letter_to_tensor('g')
-# print(tensor_to_letter(tensor))

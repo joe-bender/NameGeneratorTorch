@@ -3,10 +3,8 @@ import torch.nn as nn
 from torch.nn.functional import softmax
 import numpy as np
 from helpers import letter_to_tensor, letter_to_category, category_to_letter, tensor_to_letter
-
-model = nn.LSTM(26, 26, 2)
-model.load_state_dict(torch.load('models/model.pt'))
-model.eval()
+from NamesRNN import NamesRNN
+from random import randint
 
 def pred_to_letter_det(pred):
     pred = pred.view(-1)
@@ -27,7 +25,6 @@ def pred_to_letter_rand(pred):
 def softmax_tuned(x, tuning):
     x = torch.exp(tuning*x)
     x = x/x.sum()
-    print(x.max())
     return x
 
 def generate_name(first_letter):
@@ -45,6 +42,10 @@ def generate_name(first_letter):
 
     return ''.join(letters).capitalize()
 
-letter = category_to_letter(torch.LongTensor(1).random_(26).item())
-name = generate_name(letter)
+model = NamesRNN()
+model.load_state_dict(torch.load('models/model.pt'))
+model.eval()
+
+first_letter = category_to_letter(randint(0,25))
+name = generate_name(first_letter)
 print(name)
