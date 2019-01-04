@@ -17,12 +17,18 @@ def pred_to_letter_det(pred):
 
 def pred_to_letter_rand(pred):
     pred = pred.view(-1)
-    sm = softmax(pred, dim=0)
+    sm = softmax_tuned(pred, 10)
     probs = sm.numpy()
     letters = np.arange(26)
     choice = np.random.choice(letters, p=probs)
     letter = category_to_letter(choice)
     return letter
+
+def softmax_tuned(x, tuning):
+    x = torch.exp(tuning*x)
+    x = x/x.sum()
+    print(x.max())
+    return x
 
 def generate_name(first_letter):
     letters = [first_letter]

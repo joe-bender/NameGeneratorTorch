@@ -16,7 +16,7 @@ class WordsDataset(Dataset):
     def __getitem__(self, i):
         return self.x[:, i], self.y[:, i]
 
-def get_words(filename):
+def get_names(filename):
     data = pd.read_csv(filename, header=None, index_col=False)
     names = data.iloc[:, 0]
     names = list(names)
@@ -24,7 +24,7 @@ def get_words(filename):
     return names
 
 def get_data(filename):
-    words = get_words(filename)
+    words = get_names(filename)
 
     # inputs include all letters except the last
     x = []
