@@ -15,7 +15,7 @@ def pred_to_letter_det(pred):
 
 def pred_to_letter_rand(pred):
     pred = pred.view(-1)
-    sm = softmax_tuned(pred, 10)
+    sm = softmax_tuned(pred, 1.8)
     probs = sm.numpy()
     letters = np.arange(26)
     choice = np.random.choice(letters, p=probs)
@@ -32,7 +32,7 @@ def generate_name(first_letter):
     with torch.no_grad():
         x = letter_to_tensor(first_letter)
         x = x.view(1, 1, -1)
-        hidden = (torch.zeros(2, 1, 26), torch.zeros(2, 1, 26))
+        hidden = None
 
         for _ in range(5):
             y_pred, hidden = model(x, hidden)

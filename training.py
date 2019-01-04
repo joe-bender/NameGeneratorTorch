@@ -3,22 +3,15 @@ import torch.nn as nn
 import torch.optim as optim
 from data_funcs import get_dataloader
 from NamesRNN import NamesRNN
-
-# hyper-parameters
-learning_rate = .001
-batch_size = 64
-epochs = 1000
-
-# other settings
-print_every = 1
+from hyperparameters import hps
 
 model = NamesRNN()
-dataloader = get_dataloader('names2017.csv', batch_size)
+dataloader = get_dataloader('names2017.csv', hps['batch_size'])
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+optimizer = optim.Adam(model.parameters(), lr=hps['learning_rate'])
 
-for t in range(epochs):
+for t in range(hps['epochs']):
     loss = None
     for x, y in dataloader:
         y_pred, _ = model(x)
@@ -37,7 +30,7 @@ for t in range(epochs):
         optimizer.step()
 
     # print loss at intervals
-    if (t+1) % print_every == 0 or t == 0:
+    if (t+1) % hps['print_every'] == 0 or t == 0:
         print(t+1, loss.item())
 
 torch.save(model.state_dict(), 'models/model.pt')
