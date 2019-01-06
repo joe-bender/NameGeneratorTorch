@@ -4,4 +4,5 @@ hps = {
     'epochs': 500,
     'print_every': 1,
     'softmax_tuning': 3,
+    'filename': 'names2017.csv',
 }

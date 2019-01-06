@@ -6,7 +6,7 @@ from NamesRNN import NamesRNN
 from hyperparameters import hps
 
 model = NamesRNN()
-dataloader = get_dataloader('names2017.csv', hps['batch_size'])
+dataloader = get_dataloader(hps['filename'], hps['batch_size'])
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=hps['learning_rate'])
