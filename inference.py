@@ -5,6 +5,7 @@ import numpy as np
 from helpers import letter_to_tensor, letter_to_category, category_to_letter, tensor_to_letter
 from NamesRNN import NamesRNN
 from random import randint
+from hyperparameters import hps
 
 def pred_to_letter_det(pred):
     pred = pred.view(-1)
@@ -15,7 +16,7 @@ def pred_to_letter_det(pred):
 
 def pred_to_letter_rand(pred):
     pred = pred.view(-1)
-    sm = softmax_tuned(pred, 1.8)
+    sm = softmax_tuned(pred, hps['softmax_tuning'])
     probs = sm.numpy()
     letters = np.arange(26)
     choice = np.random.choice(letters, p=probs)
