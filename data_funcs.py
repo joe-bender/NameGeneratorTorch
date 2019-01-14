@@ -3,7 +3,7 @@ from torch.utils.data import Dataset, DataLoader
 import pandas as pd
 from helpers import letter_to_tensor, letter_to_category, category_to_letter, tensor_to_letter
 
-class WordsDataset(Dataset):
+class NamesDataset(Dataset):
     def __init__(self, filename):
         self.x, self.y = get_data(filename)
         self.seq_length = self.x.shape[0]
@@ -49,6 +49,6 @@ def collate(data):
     return x, y
 
 def get_dataloader(filename, batch_size):
-    dataset = WordsDataset(filename)
+    dataset = NamesDataset(filename)
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, drop_last=False, collate_fn=collate)
     return dataloader
