@@ -1,53 +1,51 @@
 import torch
+import string
 
-char_to_i = {
-    'a': 0,
-    'b': 1,
-    'c': 2,
-    'd': 3,
-    'e': 4,
-    'f': 5,
-    'g': 6,
-    'h': 7,
-    'i': 8,
-    'j': 9,
-    'k': 10,
-    'l': 11,
-    'm': 12,
-    'n': 13,
-    'o': 14,
-    'p': 15,
-    'q': 16,
-    'r': 17,
-    's': 18,
-    't': 19,
-    'u': 20,
-    'v': 21,
-    'w': 22,
-    'x': 23,
-    'y': 24,
-    'z': 25,
-    '_': 26,
-}
+# create dictionaries to convert between characters and ints
+chars = list(string.ascii_lowercase+'_')
+ints = range(27)
+char_to_i = {char: i for char, i in zip(chars, ints)}
 i_to_char = {i: char for char, i in char_to_i.items()}
 onehot_length = len(char_to_i)
 
+def validate_letter_input(letter):
+    # verify the input is of type string
+    if type(letter) is not str:
+        raise Exception('{} is not a string'.format(letter))
+    # verify the input is one of the characters that the RNN can process
+    if letter not in char_to_i.keys():
+        raise Exception('{} is not a lowercase letter or the underscore'.format(letter))
+
 def letter_to_onehot(letter):
+    validate_letter_input(letter)
     i = char_to_i[letter]
     onehot = torch.zeros(onehot_length)
     onehot[i] = 1
     return onehot.view(1, 1, -1)
 
 def letter_to_category(letter):
+    validate_letter_input(letter)
     return torch.tensor([char_to_i[letter]])
 
 def category_to_letter(category):
+    # verify the input is of type int
+    if type(category) is not int:
+        raise Exception('{} is not an int'.format(category))
+    # verify the input is in the range (0, 26)
+    if category not in range(27):
+        raise Exception('{} is not in the range (0, 26)'.format(category))
+
     return i_to_char[category]
 
-def onehot_to_letter(onehot):
-    return category_to_letter(onehot.argmax().item())
-
 def name_to_xy(name):
+    # verify the input is of type string
+    if type(name) is not str:
+        raise Exception('{} is not a string'.format(name))
+    # verify that each character of name is a letter
+    for letter in name:
+        if letter not in string.ascii_letters:
+            raise Exception('{} is not a letter'.format(letter))
+
     # the inputs are the lowercase letters of the name
     xs = list(name.lower())
     # the outputs are the inputs shifted over by one, plus a terminal character
