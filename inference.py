@@ -173,8 +173,7 @@ model = NamesRNN()
 model.load_state_dict(torch.load('models/model.pt'))
 model.eval()
 
-# generate some names
-for _ in range(10):
-    first_letter = random.choice(string.ascii_lowercase)
-    name = generate_name(first_letter)
-    print(name)
+# generate a name
+first_letter = random.choice(string.ascii_lowercase)
+name = generate_name(first_letter)
+print(name)
