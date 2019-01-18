@@ -1,3 +1,17 @@
+"""Generate names with the network
+
+Once the RNN network has been trained in training.py, it can be used here to
+generate names. A first letter for the name is generated randomly and given to
+the network as the first input. We take the first output and the first hidden
+state and feed them to the next timestep like in training.py, but we also
+take the output logits and convert them to a letter to add to the name
+being generated. This is done by passing the logits through a softmax to get
+a probability distribution and then sampling from that distribution to choose a
+letter. When the network predicts the terminal character (underscore), the
+process is over and the previously predicted characters are concatenated into
+a name to be output.
+"""
+
 import torch
 import torch.nn as nn
 from torch.nn.functional import softmax
@@ -116,7 +130,7 @@ def generate_name(first_letter):
 
     return name.capitalize()
 
-
+# load the model that was trained in taining.py
 model = NamesRNN()
 model.load_state_dict(torch.load('models/model.pt'))
 model.eval()

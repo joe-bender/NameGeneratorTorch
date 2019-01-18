@@ -1,3 +1,5 @@
+"""Helper functions to convert data between various types/representations"""
+
 import torch
 import string
 
@@ -62,7 +64,7 @@ def name_to_xy(name):
 
     * name: the name to convert
     """
-    
+
     # verify the input is of type string
     if type(name) is not str:
         raise Exception('{} is not a string'.format(name))

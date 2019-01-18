@@ -1,3 +1,17 @@
+"""Train the RNN model on random batches of names from the given text file
+
+Hyperparameters are taken from hyperparameters.py
+The model takes input in the form of (sequence_index, batch_index, onehot_tensor),
+but we give it tensors of size (1, 1, 27) because it only gets one letter at a
+time. A certain number of names, given by batch_size, is sampled from the full
+list of names. Then the letters from each name from the minibatch are sent through
+the network one at a time, with the hidden output from one letter being the hidden
+input for the next letter. The losses from each name in the minibatch are averaged
+and the final loss for each minibatch is calculated from this average.
+CrossEntropyLoss is used because this is a categorization task, since we're
+predicting the next letter of the name given previous letters. 
+"""
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -15,8 +29,7 @@ optimizer = optim.Adam(model.parameters(), lr=hps['learning_rate'])
 
 batch_size = hps['batch_size']
 
-#for t in range(hps['epochs']):
-while True:
+for t in range(hps['epochs']):
     batch = random.sample(names, batch_size)
     batch_losses = []
     for name in batch:
