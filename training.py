@@ -9,7 +9,7 @@ the network one at a time, with the hidden output from one letter being the hidd
 input for the next letter. The losses from each name in the minibatch are averaged
 and the final loss for each minibatch is calculated from this average.
 CrossEntropyLoss is used because this is a categorization task, since we're
-predicting the next letter of the name given previous letters. 
+predicting the next letter of the name given previous letters.
 """
 
 import torch
@@ -31,13 +31,16 @@ batch_size = hps['batch_size']
 
 for t in range(hps['epochs']):
     batch = random.sample(names, batch_size)
+    # keep losses from each batch to be averaged later
     batch_losses = []
     for name in batch:
         xs, ys = helpers.name_to_xy(name)
 
+        # keep losses from each sequence (name) to be averaged later
         seq_losses = []
-        # initialize the hidden output
+        # start with hidden state of zeros for each new sequence (name)
         hidden = None
+        # loop through each letter (sequence index) of the name
         for i_seq in range(len(name)):
             x, y = xs[i_seq], ys[i_seq]
             y_pred, hidden = model(x, hidden)
@@ -45,8 +48,10 @@ for t in range(hps['epochs']):
             y_pred = y_pred.view(1, -1)
             this_seq_loss = criterion(y_pred, y)
             seq_losses.append(this_seq_loss)
+        # get the mean of all losses from the sequence
         seq_loss = torch.mean(torch.stack(seq_losses))
         batch_losses.append(seq_loss)
+    # get the mean of all losses from the batch of names
     batch_loss = torch.mean(torch.stack(batch_losses))
 
     optimizer.zero_grad()

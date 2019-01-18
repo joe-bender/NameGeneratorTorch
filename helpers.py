@@ -2,13 +2,13 @@
 
 import torch
 import string
+from hyperparameters import hps
 
 # create dictionaries to convert between characters and ints
-chars = list(string.ascii_lowercase+'_')
+chars = list(string.ascii_lowercase+'_') # underscore represents end of name
 ints = range(27)
 char_to_i = {char: i for char, i in zip(chars, ints)}
 i_to_char = {i: char for char, i in char_to_i.items()}
-onehot_length = len(char_to_i)
 
 def validate_letter_input(letter):
     """Make sure the input letter is actually a letter
@@ -30,10 +30,14 @@ def letter_to_onehot(letter):
     """
 
     validate_letter_input(letter)
+    # create a tensor with a 1 at the letter's index and zeros everywhere else
     i = char_to_i[letter]
-    onehot = torch.zeros(onehot_length)
+    onehot = torch.zeros(hps['onehot_length'])
     onehot[i] = 1
-    return onehot.view(1, 1, -1)
+    # reshape into the shape that the LSTM module requires for inputs
+    onehot = onehot.view(1, 1, -1)
+
+    return onehot
 
 def letter_to_category(letter):
     """Convert a letter to a classification category
@@ -42,7 +46,10 @@ def letter_to_category(letter):
     """
 
     validate_letter_input(letter)
-    return torch.tensor([char_to_i[letter]])
+    # create the tensor in the shape that CrossEntropyLoss requires
+    category = torch.tensor([char_to_i[letter]])
+
+    return category
 
 def category_to_letter(category):
     """Convert a classification category to a letter
@@ -57,7 +64,10 @@ def category_to_letter(category):
     if category not in range(27):
         raise Exception('{} is not in the range (0, 26)'.format(category))
 
-    return i_to_char[category]
+    # simply use the dictionary
+    letter = i_to_char[category]
+
+    return letter
 
 def name_to_xy(name):
     """Convert a name to a sequence of training data for the network
@@ -78,6 +88,8 @@ def name_to_xy(name):
     # the outputs are the inputs shifted over by one, plus a terminal character
     ys = xs[1:]+['_']
 
+    # create lists to be iterated through during training step
+    # and convert to the correct format for inputs/outputs
     xs = [letter_to_onehot(x) for x in xs]
     ys = [letter_to_category(y) for y in ys]
 

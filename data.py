@@ -1,8 +1,6 @@
 """Collect data from a text file to be used by the network"""
 
-import torch
 import pandas as pd
-import helpers
 
 def get_names(filename):
     """Get a list of all the names from the given text file
