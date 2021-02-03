@@ -28,7 +28,7 @@ class NamesRNN(nn.Module):
 
         * x: input in the form of a sequence of batches of onehot tensors
         representing letters.
-        * hidden: a tuple of the C and h tensors to be passed sideways into the
+        * hidden: a tuple of the c and h tensors to be passed sideways into the
         next timestep of the LSTM. The default is None so that the first step of
         the sequence is given tensors of zeros.
         """
